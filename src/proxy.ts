@@ -19,7 +19,7 @@ export function proxy(request: NextRequest) {
   // Rotas de auth - /login, /signup
   if (pathname === "/login" || pathname === "/signup") {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      return NextResponse.redirect(new URL("/admin", request.url));
     }
   }
 

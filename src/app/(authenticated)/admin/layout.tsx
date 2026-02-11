@@ -10,7 +10,7 @@ interface AdminLayoutProps {
 }
 
 const sidebarItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: Home },
+  { href: "/admin", label: "Dashboard", icon: Home },
 ];
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <aside className="hidden w-64 border-r bg-card lg:block">
         <div className="flex h-16 items-center border-b px-6">
-          <Link href="/admin/dashboard" className="text-xl font-bold">
+          <Link href="/admin" className="text-xl font-bold">
             Viewer3D
           </Link>
         </div>
@@ -48,7 +48,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       <main className="flex-1">
         <header className="flex h-16 items-center justify-between border-b px-6">
           <div className="lg:hidden">
-            <Link href="/admin/dashboard" className="text-xl font-bold">
+            <Link href="/admin" className="text-xl font-bold">
               Viewer3D
             </Link>
           </div>

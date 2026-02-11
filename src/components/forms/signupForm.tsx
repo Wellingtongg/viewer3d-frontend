@@ -30,7 +30,7 @@ export function SignupForm() {
 
       if (result.success && result.data) {
         toast.success("Conta criada com sucesso!");
-        router.push("/admin/dashboard");
+        router.push("/admin");
         router.refresh();
       } else {
         setFormikErrors<SignupFormValues>(result.data?.errors, formikBag);

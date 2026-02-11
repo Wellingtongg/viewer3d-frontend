@@ -26,7 +26,7 @@ export function LoginForm() {
       const result = await login(values);
 
       if (result.success && result.data) {
-        router.push("/admin/dashboard");
+        router.push("/admin");
         router.refresh();
       } else {
         setFormikErrors<LoginFormValues>(result.data?.errors, formikBag);
