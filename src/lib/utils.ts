@@ -1,6 +1,7 @@
-import { Errors } from "@/types/general";
+import { Errors, ResponseWithErrors } from "@/types/general";
 import { clsx, type ClassValue } from "clsx";
 import { FormikHelpers } from "formik";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -9,6 +10,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function setErrors<T>(data: ResponseWithErrors | null | undefined, formikBag: FormikHelpers<T>) {
+  setFormikErrors<T>(data?.errors, formikBag);
+  if (data?.error) {
+    toast.error(data.error);
+  }
 }
 
 export function setFormikErrors<T>(

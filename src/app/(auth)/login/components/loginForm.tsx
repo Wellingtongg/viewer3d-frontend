@@ -3,20 +3,23 @@
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { toast } from "sonner";
-
+import Yup from "@/lib/yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { login } from "@/actions/authActions";
-import { loginSchema, LoginFormValues } from "@/lib/validations/auth";
-import { setFormikErrors } from "@/lib/utils";
+import { setErrors } from "@/lib/utils";
+import { LoginParams } from "@/types/auth";
+
+export const loginSchema = Yup.object().shape({
+  email: Yup.string().email().required(),
+  password: Yup.string().required().min(6),
+});
 
 export function LoginForm() {
   const router = useRouter();
 
-  const formik = useFormik<LoginFormValues>({
+  const formik = useFormik<LoginParams>({
     initialValues: {
       email: "",
       password: "",
@@ -29,8 +32,7 @@ export function LoginForm() {
         router.push("/admin");
         router.refresh();
       } else {
-        setFormikErrors<LoginFormValues>(result.data?.errors, formikBag);
-        toast.error(result.data?.error || "Erro ao fazer login");
+        setErrors<LoginParams>(result.data, formikBag);
       }
     },
   });

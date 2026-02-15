@@ -3,21 +3,32 @@
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Yup from "@/lib/yup";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { signup } from "@/actions/authActions";
-import { signupSchema, SignupFormValues } from "@/lib/validations/auth";
-import { setFormikErrors } from "@/lib/utils";
+import { setErrors } from "@/lib/utils";
+import { SignupParams } from "@/types/auth";
+
+export const signupSchema = Yup.object().shape({
+  name: Yup.string().required().max(255),
+  first_name: Yup.string().required().max(255),
+  last_name: Yup.string().required().max(255),
+  email: Yup.string().email().required(),
+  password: Yup.string().required().min(6),
+  password_confirmation: Yup.string()
+    .required()
+    .oneOf([Yup.ref("password")], "As senhas não conferem"),
+});
 
 export function SignupForm() {
   const router = useRouter();
 
-  const formik = useFormik<SignupFormValues>({
+  const formik = useFormik<SignupParams>({
     initialValues: {
+      name: "",
       first_name: "",
       last_name: "",
       email: "",
@@ -33,14 +44,33 @@ export function SignupForm() {
         router.push("/admin");
         router.refresh();
       } else {
-        setFormikErrors<SignupFormValues>(result.data?.errors, formikBag);
-        toast.error("Verifique os campos do formulário");
+        setErrors<SignupParams>(result.data, formikBag);
       }
     },
   });
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Nome da Empresa</Label>
+        <Input
+          id="name"
+          type="text"
+          placeholder="Nome da sua empresa"
+          value={formik.values.name}
+          onChange={formik.handleChange("name")}
+          onBlur={formik.handleBlur("name")}
+          className={
+            formik.touched.name && formik.errors.name
+              ? "border-destructive"
+              : ""
+          }
+        />
+        {formik.touched.name && formik.errors.name && (
+          <p className="text-sm text-destructive">{formik.errors.name}</p>
+        )}
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="first_name">Nome</Label>
         <Input

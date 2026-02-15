@@ -8,12 +8,13 @@ export interface User {
   created_at: string;
 }
 
-export interface LoginCredentials {
+export interface LoginParams {
   email: string;
   password: string;
 }
 
-export interface SignupCredentials {
+export interface SignupParams {
+  name: string;
   first_name: string;
   last_name: string;
   email: string;
