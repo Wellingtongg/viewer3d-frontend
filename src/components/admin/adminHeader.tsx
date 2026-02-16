@@ -3,19 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  ChevronDown,
-  LogOut,
-  Menu,
-  User,
-  BarChart3,
-  Box,
-  Layers,
-  Users,
-  CreditCard,
-  Code2,
-  Settings,
-} from "lucide-react";
+import { ChevronDown, LogOut, Menu, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { serverLogout } from "@/actions/authServerActions";
 import { updateMyCurrentCompany } from "@/actions/userActions";
@@ -36,16 +24,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-
-const NAV_ITEMS = [
-  { label: "Dashboard", href: "/admin", icon: BarChart3 },
-  { label: "Produtos", href: "/admin/products", icon: Box },
-  { label: "Texturas", href: "/admin/textures", icon: Layers },
-  { label: "Usuários", href: "/admin/users", icon: Users },
-  { label: "Billing", href: "/admin/billing", icon: CreditCard },
-  { label: "Integração", href: "/admin/integration", icon: Code2 },
-  { label: "Configurações", href: "/admin/settings", icon: Settings },
-];
+import { NAV_ITEMS_WITH_SETTINGS as NAV_ITEMS } from "./adminNavItems";
 
 interface AdminHeaderProps {
   user: UserType | null;
