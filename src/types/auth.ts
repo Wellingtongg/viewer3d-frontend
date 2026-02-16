@@ -1,11 +1,23 @@
 import { ResponseWithErrors } from "./general";
 
+export interface CompanySmall {
+  id: number;
+  name: string;
+  slug: string;
+  logo: string | null;
+  owner: { id: number; email: string } | null;
+}
+
 export interface User {
   id: number;
+  name: string;
   first_name: string;
   last_name: string;
   email: string;
-  created_at: string;
+  is_owner: boolean;
+  company: CompanySmall;
+  companies: CompanySmall[];
+  avatar: string | null;
 }
 
 export interface LoginParams {
