@@ -35,3 +35,13 @@ export interface SignupParams {
 }
 
 export interface AuthResponse extends User, ResponseWithErrors {}
+
+export interface ForgotPasswordParams {
+  email: string;
+}
+
+export interface ResetPasswordParams {
+  reset_password_token: string;
+  password: string;
+  password_confirmation: string;
+}

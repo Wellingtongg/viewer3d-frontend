@@ -1,6 +1,7 @@
 import { getServerUser } from "@/actions/authServerActions";
 import { AdminHeader } from "@/components/admin/adminHeader";
 import { AdminNav } from "@/components/admin/adminNav";
+import { redirect } from "next/navigation";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -8,6 +9,8 @@ interface AdminLayoutProps {
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const user = await getServerUser();
+
+  if (!user) redirect("/api/auth/clear-session");
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">

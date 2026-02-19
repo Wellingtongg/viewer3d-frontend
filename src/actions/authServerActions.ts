@@ -10,8 +10,6 @@ export async function getServerUser(): Promise<User | null> {
   const response = await apiServer<AuthResponse>("/api/v1/me");
 
   if (response.status === statusCodes.unauthorized) {
-    const cookieStore = await cookies();
-    cookieStore.delete(SESSION_COOKIE);
     return null;
   }
 
