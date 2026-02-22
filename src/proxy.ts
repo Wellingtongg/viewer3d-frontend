@@ -16,8 +16,13 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Rotas de auth - /login, /signup
-  if (pathname === "/login" || pathname === "/signup") {
+  // Rotas de auth - /login, /signup, /forgot-password, /reset-password
+  if (
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password"
+  ) {
     if (isAuthenticated) {
       return NextResponse.redirect(new URL("/admin", request.url));
     }
