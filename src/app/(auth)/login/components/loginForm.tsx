@@ -3,7 +3,7 @@
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import * as Yup from "yup";
+import Yup from "@/lib/yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +13,8 @@ import { LoginParams } from "@/types/auth";
 import { Mail, Lock, ArrowRight, Apple } from "lucide-react"; // Importei Apple aqui
 
 export const loginSchema = Yup.object().shape({
-  email: Yup.string().email("E-mail inválido").required("Obrigatório"),
-  password: Yup.string().required("Obrigatório").min(6, "Mínimo 6 caracteres"),
+  email: Yup.string().email().required(),
+  password: Yup.string().required().min(6),
 });
 
 export function LoginForm() {
