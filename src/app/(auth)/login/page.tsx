@@ -11,7 +11,7 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Bem-vindo de volta</CardTitle>
+        <CardTitle className="text-2xl">Bem-vindo</CardTitle>
         <CardDescription>Entre com sua conta para continuar</CardDescription>
       </CardHeader>
       <CardContent>
