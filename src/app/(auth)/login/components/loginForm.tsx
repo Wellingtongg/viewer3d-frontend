@@ -5,17 +5,11 @@ import { useRouter } from "next/navigation";
 import Yup from "@/lib/yup";
 import { Button } from "@/components/ui/button";
 import { login } from "@/actions/authActions";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-} from "@/components/ui/input-group";
 import { setErrors } from "@/lib/utils";
 import { LoginParams } from "@/types/auth";
-import { Mail, Lock, ArrowRight, Apple, Loader2 } from "lucide-react"; // Importei Apple aqui
+import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { SSOButtons, SSODivider } from "@/components/auth/ssoButtons";
+import Input from "@/components/input";
 
 export const loginSchema = Yup.object().shape({
   email: Yup.string().email().required(),
@@ -48,61 +42,23 @@ export function LoginForm() {
       <SSOButtons />
       <SSODivider />
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-        <Field
-          data-invalid={
-            formik.touched.email && formik.errors.email ? "true" : false
-          }
-        >
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <InputGroup>
-            <InputGroupInput
-              id="email"
-              type="email"
-              placeholder="seu@email.com"
-              value={formik.values.email}
-              onChange={formik.handleChange("email")}
-              onBlur={formik.handleBlur("email")}
-            />
-            <InputGroupAddon>
-              <InputGroupText>
-                <Mail />
-              </InputGroupText>
-            </InputGroupAddon>
-          </InputGroup>
-          {formik.touched.email && formik.errors.email && (
-            <FieldDescription className="text-xs text-destructive">
-              {formik.errors.email}
-            </FieldDescription>
-          )}
-        </Field>
+        <Input
+          id="email"
+          type="email"
+          label="Email"
+          placeholder="seu@email.com"
+          leftIcon={<Mail />}
+          formik={formik}
+        />
 
-        <Field
-          data-invalid={
-            formik.touched.password && formik.errors.password ? "true" : false
-          }
-        >
-          <FieldLabel htmlFor="password">Senha</FieldLabel>
-          <InputGroup>
-            <InputGroupInput
-              id="password"
-              type="password"
-              placeholder="••••••"
-              value={formik.values.password}
-              onChange={formik.handleChange("password")}
-              onBlur={formik.handleBlur("password")}
-            />
-            <InputGroupAddon>
-              <InputGroupText>
-                <Mail />
-              </InputGroupText>
-            </InputGroupAddon>
-          </InputGroup>
-          {formik.touched.password && formik.errors.password && (
-            <FieldDescription className="text-xs text-destructive">
-              {formik.errors.password}
-            </FieldDescription>
-          )}
-        </Field>
+        <Input
+          id="password"
+          type="password"
+          label="Senha"
+          placeholder="••••••"
+          leftIcon={<Lock />}
+          formik={formik}
+        />
 
         <Button
           type="submit"
