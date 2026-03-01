@@ -63,7 +63,7 @@ export function ForgotPasswordForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={formik.isSubmitting}>
-        {formik.isSubmitting ? "Enviando..." : "Enviar instruções"}
+        {formik.isSubmitting ? "Enviando..." : "Enviar Link"}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">

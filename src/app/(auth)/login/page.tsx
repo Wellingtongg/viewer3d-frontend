@@ -8,6 +8,7 @@ import {
 import { LoginForm } from "./components/loginForm";
 import Link from "next/link";
 import Header from "@/components/auth/header";
+import Footer from "@/components/auth/footer";
 
 export default function LoginPage() {
   return (
@@ -24,17 +25,15 @@ export default function LoginPage() {
         </CardContent>
       </Card>
 
-      <div className="text-center">
-        <p className="text-sm text-muted-foreground">
-          Nao tem conta?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-primary transition-colors hover:text-primary/80"
-          >
-            Criar agora
-          </Link>
-        </p>
-      </div>
+      <Footer>
+        Nao tem conta?{" "}
+        <Link
+          href="/signup"
+          className="font-medium text-primary transition-colors hover:text-primary/80"
+        >
+          Criar agora
+        </Link>
+      </Footer>
     </div>
   );
 }
