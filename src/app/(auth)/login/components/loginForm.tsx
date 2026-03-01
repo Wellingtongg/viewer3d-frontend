@@ -2,14 +2,20 @@
 
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Yup from "@/lib/yup";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { login } from "@/actions/authActions";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group";
 import { setErrors } from "@/lib/utils";
 import { LoginParams } from "@/types/auth";
+import { Mail, Lock, ArrowRight, Apple, Loader2 } from "lucide-react"; // Importei Apple aqui
+import { SSOButtons, SSODivider } from "@/components/auth/ssoButtons";
 
 export const loginSchema = Yup.object().shape({
   email: Yup.string().email().required(),
@@ -38,65 +44,84 @@ export function LoginForm() {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">E-mail</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="seu@email.com"
-          value={formik.values.email}
-          onChange={formik.handleChange("email")}
-          onBlur={formik.handleBlur("email")}
-          className={
-            formik.touched.email && formik.errors.email
-              ? "border-destructive"
-              : ""
+    <>
+      <SSOButtons />
+      <SSODivider />
+      <form onSubmit={formik.handleSubmit} className="space-y-4">
+        <Field
+          data-invalid={
+            formik.touched.email && formik.errors.email ? "true" : false
           }
-        />
-        {formik.touched.email && formik.errors.email && (
-          <p className="text-sm text-destructive">{formik.errors.email}</p>
-        )}
-      </div>
+        >
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              value={formik.values.email}
+              onChange={formik.handleChange("email")}
+              onBlur={formik.handleBlur("email")}
+            />
+            <InputGroupAddon>
+              <InputGroupText>
+                <Mail />
+              </InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
+          {formik.touched.email && formik.errors.email && (
+            <FieldDescription className="text-xs text-destructive">
+              {formik.errors.email}
+            </FieldDescription>
+          )}
+        </Field>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Senha</Label>
-          <Link
-            href="/forgot-password"
-            className="text-sm text-primary hover:underline"
-          >
-            Esqueci minha senha
-          </Link>
-        </div>
-        <Input
-          id="password"
-          type="password"
-          placeholder="••••••"
-          value={formik.values.password}
-          onChange={formik.handleChange("password")}
-          onBlur={formik.handleBlur("password")}
-          className={
-            formik.touched.password && formik.errors.password
-              ? "border-destructive"
-              : ""
+        <Field
+          data-invalid={
+            formik.touched.password && formik.errors.password ? "true" : false
           }
-        />
-        {formik.touched.password && formik.errors.password && (
-          <p className="text-sm text-destructive">{formik.errors.password}</p>
-        )}
-      </div>
+        >
+          <FieldLabel htmlFor="password">Senha</FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              id="password"
+              type="password"
+              placeholder="••••••"
+              value={formik.values.password}
+              onChange={formik.handleChange("password")}
+              onBlur={formik.handleBlur("password")}
+            />
+            <InputGroupAddon>
+              <InputGroupText>
+                <Mail />
+              </InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
+          {formik.touched.password && formik.errors.password && (
+            <FieldDescription className="text-xs text-destructive">
+              {formik.errors.password}
+            </FieldDescription>
+          )}
+        </Field>
 
-      <Button type="submit" className="w-full" disabled={formik.isSubmitting}>
-        {formik.isSubmitting ? "Entrando..." : "Entrar"}
-      </Button>
-
-      <p className="text-center text-sm text-muted-foreground">
-        Não tem uma conta?{" "}
-        <Link href="/signup" className="text-primary hover:underline">
-          Cadastre-se
-        </Link>
-      </p>
-    </form>
+        <Button
+          type="submit"
+          className="h-10 w-full gap-2"
+          disabled={formik.isSubmitting}
+        >
+          {formik.isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Conectando...
+            </>
+          ) : (
+            <>
+              Fazer Login
+              <ArrowRight className="h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </form>
+    </>
   );
 }
