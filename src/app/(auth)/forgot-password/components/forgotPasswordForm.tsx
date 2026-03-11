@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { forgotPassword } from "@/actions/authActions";
 import { ForgotPasswordParams } from "@/types/auth";
+import Footer from "@/components/auth/footer";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email().required(),
@@ -65,13 +66,6 @@ export function ForgotPasswordForm() {
       <Button type="submit" className="w-full" disabled={formik.isSubmitting}>
         {formik.isSubmitting ? "Enviando..." : "Enviar Link"}
       </Button>
-
-      <p className="text-center text-sm text-muted-foreground">
-        Lembrou a senha?{" "}
-        <Link href="/login" className="text-primary hover:underline">
-          Entrar
-        </Link>
-      </p>
     </form>
   );
 }

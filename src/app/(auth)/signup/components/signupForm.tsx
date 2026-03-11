@@ -178,13 +178,6 @@ export function SignupForm() {
       <Button type="submit" className="w-full" disabled={formik.isSubmitting}>
         {formik.isSubmitting ? "Criando conta..." : "Criar conta"}
       </Button>
-
-      <p className="text-center text-sm text-muted-foreground">
-        Já tem uma conta?{" "}
-        <Link href="/login" className="text-primary hover:underline">
-          Faça login
-        </Link>
-      </p>
     </form>
   );
 }

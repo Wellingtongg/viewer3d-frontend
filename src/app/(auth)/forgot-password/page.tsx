@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/card";
 import { ForgotPasswordForm } from "./components/forgotPasswordForm";
 import Header from "@/components/auth/header";
+import Footer from "@/components/auth/footer";
+import Link from "next/link";
 
 export default function ForgotPasswordPage() {
   return (
@@ -27,6 +29,16 @@ export default function ForgotPasswordPage() {
           <ForgotPasswordForm />
         </CardContent>
       </Card>
+
+      <Footer>
+        Lembrou a senha?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-primary transition-colors hover:text-primary/80"
+        >
+          Entrar
+        </Link>
+      </Footer>
     </div>
   );
 }
