@@ -8,18 +8,18 @@ import {
 import { SignupForm } from "./components/signupForm";
 import Footer from "@/components/auth/footer";
 import Link from "next/link";
+import Header from "@/components/auth/header";
 
 export default function SignupPage() {
   return (
     <div className="w-full max-w-md space-y-6">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Criar conta</CardTitle>
-          <CardDescription>
-            Preencha os dados para criar sua conta
-          </CardDescription>
+      <Header title="Criar conta" subtitle="Comece a usar gratuitamente" />
+      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <CardHeader className="space-y-1 pb-4">
+          <CardTitle className="text-xl">Detalhes da conta</CardTitle>
+          <CardDescription>Complete seu cadastro</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <SignupForm />
         </CardContent>
       </Card>
