@@ -1,6 +1,12 @@
 import { api } from "@/lib/api";
 import { statusCodes } from "@/lib/utils";
-import { AuthResponse, ForgotPasswordParams, LoginParams, ResetPasswordParams, SignupParams } from "@/types/auth";
+import {
+  AuthResponse,
+  ForgotPasswordParams,
+  LoginParams,
+  ResetPasswordParams,
+  SignupParams,
+} from "@/types/auth";
 import { ApiResponse } from "@/types/general";
 
 export async function login(
@@ -56,5 +62,6 @@ export async function resetPassword(
   return {
     success: response.status === statusCodes.ok,
     data: null,
+    status: response.status,
   };
 }

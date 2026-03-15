@@ -12,7 +12,10 @@ export function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function setErrors<T>(data: ResponseWithErrors | null | undefined, formikBag: FormikHelpers<T>) {
+export function setErrors<T>(
+  data: ResponseWithErrors | null | undefined,
+  formikBag: FormikHelpers<T>,
+) {
   setFormikErrors<T>(data?.errors, formikBag);
   if (data?.error) {
     toast.error(data.error);
@@ -46,4 +49,5 @@ export const statusCodes = {
   unauthorized: 401,
   payment_required: 402,
   forbidden: 403,
+  notFound: 404,
 };

@@ -12,6 +12,7 @@ export interface ResponseWithErrors {
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
+  status?: number;
 }
 
 export interface RestrictedRecord {

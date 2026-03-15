@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { resetPassword } from "@/actions/authActions";
+import { useState } from "react";
+import { statusCodes } from "@/lib/utils";
 
 const resetPasswordSchema = Yup.object().shape({
   password: Yup.string().required().min(6),
@@ -21,6 +23,8 @@ export function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
+
+  const [isInvalidToken, setIsInvalidToken] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -37,13 +41,15 @@ export function ResetPasswordForm() {
       if (result.success) {
         toast.success("Senha redefinida com sucesso!");
         router.push("/login");
+      } else if (result.status === statusCodes.notFound) {
+        setIsInvalidToken(true);
       } else {
         toast.error("Token inválido ou expirado. Solicite um novo link.");
       }
     },
   });
 
-  if (!token) {
+  if (!token || isInvalidToken) {
     return (
       <div className="space-y-4 text-center">
         <p className="text-sm text-destructive">
