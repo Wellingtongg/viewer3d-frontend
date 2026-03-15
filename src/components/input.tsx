@@ -5,34 +5,46 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
-import { Mail } from "lucide-react";
+import { FormikHelpers } from "formik";
 
-export default function Input({ formik }) {
+interface InputProps {
+  formik: FormikHelpers<any>;
+  label: string;
+  leftIcon: React.ReactNode;
+  placeholder: string;
+  id: string;
+  type: string;
+}
+
+export default function Input({
+  formik,
+  label,
+  leftIcon,
+  placeholder,
+  id,
+  type,
+}: InputProps) {
   return (
     <Field
-      data-invalid={
-        formik.touched.email && formik.errors.email ? "true" : false
-      }
+      data-invalid={formik.touched[id] && formik.errors[id] ? "true" : false}
     >
-      <FieldLabel htmlFor="email">Email</FieldLabel>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <InputGroup>
         <InputGroupInput
-          id="email"
-          type="email"
-          placeholder="seu@email.com"
-          value={formik.values.email}
-          onChange={formik.handleChange("email")}
-          onBlur={formik.handleBlur("email")}
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          value={formik.values[id]}
+          onChange={formik.handleChange(id)}
+          onBlur={formik.handleBlur(id)}
         />
         <InputGroupAddon>
-          <InputGroupText>
-            <Mail />
-          </InputGroupText>
+          <InputGroupText>{leftIcon}</InputGroupText>
         </InputGroupAddon>
       </InputGroup>
-      {formik.touched.email && formik.errors.email && (
+      {formik.touched[id] && formik.errors[id] && (
         <FieldDescription className="text-xs text-destructive">
-          {formik.errors.email}
+          {formik.errors[id]}
         </FieldDescription>
       )}
     </Field>
