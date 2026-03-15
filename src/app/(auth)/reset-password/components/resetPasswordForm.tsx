@@ -108,13 +108,6 @@ export function ResetPasswordForm() {
       <Button type="submit" className="w-full" disabled={formik.isSubmitting}>
         {formik.isSubmitting ? "Salvando..." : "Redefinir senha"}
       </Button>
-
-      <p className="text-center text-sm text-muted-foreground">
-        Lembrou a senha?{" "}
-        <Link href="/login" className="text-primary hover:underline">
-          Entrar
-        </Link>
-      </p>
     </form>
   );
 }
