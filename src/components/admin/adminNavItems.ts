@@ -20,7 +20,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Produtos", href: "/admin/products", icon: Box },
   { label: "Texturas", href: "/admin/textures", icon: Layers },
   { label: "Usuários", href: "/admin/users", icon: Users },
-  { label: "Billing", href: "/admin/billing", icon: CreditCard },
+  { label: "Pagamentos", href: "/admin/billing", icon: CreditCard },
   { label: "Integração", href: "/admin/integration", icon: Code2 },
 ];
 

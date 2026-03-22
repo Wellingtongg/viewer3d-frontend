@@ -1,11 +1,11 @@
 import PageHeader from "@/components/pageHeader";
 
-export default async function DashboardPage() {
+export default async function TexturesPage() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader
-        title="Dashboard"
-        subtitle="Visao geral de performance dos seus produtos"
+        title="Texturas"
+        subtitle="Biblioteca de texturas PBR para seus modelos"
       ></PageHeader>
     </div>
   );

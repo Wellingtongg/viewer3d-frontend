@@ -1,11 +1,11 @@
 import PageHeader from "@/components/pageHeader";
 
-export default async function DashboardPage() {
+export default async function ProductsPage() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader
-        title="Dashboard"
-        subtitle="Visao geral de performance dos seus produtos"
+        title="Produtos"
+        subtitle="Gerencie seus modelos 3D"
       ></PageHeader>
     </div>
   );
