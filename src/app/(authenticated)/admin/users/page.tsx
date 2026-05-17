@@ -1,4 +1,5 @@
 "use client";
+import { getUsers } from "@/actions/userActions";
 import PageHeader from "@/components/pageHeader";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -7,54 +8,30 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ROLE_LABELS, useUsersStore } from "@/lib/stores/users-store";
-import {
-  Crown,
-  MoreHorizontal,
-  Plus,
-  Search,
-  Trash2,
-  UserCog,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
-} from "@/components/ui/dialog";
-
-export function getInitials(name: string, email: string) {
-  if (name) {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  }
-  return email[0].toUpperCase();
-}
+import { getInitials, useUsersStore } from "@/lib/stores/users-store";
+import { Crown, MoreHorizontal, Plus, Search, Trash2 } from "lucide-react";
+import { useEffect } from "react";
 
 export default function UsersPage() {
-  const transferOpen = useUsersStore((s) => s.transferOpen);
   const filteredUsers = useUsersStore((s) => s.filteredUsers)();
-  const transferCandidates = useUsersStore((s) => s.transferCandidates)();
   const setSearch = useUsersStore((s) => s.setSearch);
   const search = useUsersStore((s) => s.search);
-  const openTransfer = useUsersStore((s) => s.openTransfer);
-  const closeTransfer = useUsersStore((s) => s.closeTransfer);
   const transferOwnership = useUsersStore((s) => s.transferOwnership);
   const deleteUser = useUsersStore((s) => s.deleteUser);
-  const openRoleUpdate = useUsersStore((s) => s.openRoleUpdate);
-  const roleUpdateValue = useUsersStore((s) => s.roleUpdateValue);
-  const roleUpdateUser = useUsersStore((s) => s.roleUpdateUser);
+  const setUsers = useUsersStore((s) => s.setUsers);
+
+  useEffect(() => {
+    (async () => {
+      const response = await getUsers();
+      if (response.success && response.data) {
+        setUsers(response.data.records);
+      }
+    })();
+  }, []);
 
   return (
     <div className="flex h-full flex-col">
@@ -98,7 +75,7 @@ export default function UsersPage() {
                       {getInitials(user.name, user.email)}
                     </AvatarFallback>
                   </Avatar>
-                  {user.isOwner && (
+                  {user.is_owner && (
                     <Crown className="absolute bottom-0 right-0 h-3 w-3 text-amber-500 drop-shadow-sm sm:h-3.5 sm:w-3.5" />
                   )}
                 </div>
@@ -109,7 +86,7 @@ export default function UsersPage() {
                     <p className="truncate text-xs font-medium text-foreground sm:text-sm">
                       {user.name || user.email}
                     </p>
-                    {user.isOwner && (
+                    {user.is_owner && (
                       <Badge
                         variant="secondary"
                         className="shrink-0 text-[9px] sm:text-[10px]"
@@ -117,7 +94,7 @@ export default function UsersPage() {
                         Proprietário
                       </Badge>
                     )}
-                    {user.status === "pending" && (
+                    {user.status === "inactive" && (
                       <Badge
                         variant="secondary"
                         className="shrink-0 text-[9px] sm:text-[10px]"
@@ -132,25 +109,11 @@ export default function UsersPage() {
                         {user.email}
                       </p>
                     )}
-                    <Badge
-                      variant={user.role === "admin" ? "default" : "outline"}
-                      className="shrink-0 text-[9px] sm:hidden"
-                    >
-                      {ROLE_LABELS[user.role]}
-                    </Badge>
                   </div>
                 </div>
 
-                {/* Role badge - desktop only */}
-                <Badge
-                  variant={user.role === "admin" ? "default" : "outline"}
-                  className="hidden shrink-0 text-[10px] sm:inline-flex"
-                >
-                  {ROLE_LABELS[user.role]}
-                </Badge>
-
                 {/* Actions */}
-                {!user.isOwner && (
+                {!user.is_owner && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -165,20 +128,11 @@ export default function UsersPage() {
                       <>
                         <DropdownMenuItem
                           className="gap-2"
-                          onClick={() => openRoleUpdate(user)}
-                        >
-                          <UserCog className="h-3.5 w-3.5" />
-                          Atualizar Funcao
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="gap-2"
                           onClick={() => transferOwnership(user.id)}
                         >
                           <Crown className="h-3.5 w-3.5" />
                           Transferir Propriedade
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="gap-2 text-destructive focus:text-destructive"
                           onClick={() => deleteUser(user.id)}
