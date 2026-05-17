@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ROLE_LABELS, useUsersStore } from "@/lib/stores/users-store";
 import {
   Crown,
   MoreHorizontal,
@@ -20,48 +21,15 @@ import {
   Trash2,
   UserCog,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
-import { useState } from "react";
-
-export const ROLE_LABELS = {
-  admin: "Administrador",
-  user: "Usuario",
-};
-
-const users = [
-  {
-    id: "u-1",
-    name: "Ana Silva",
-    email: "ana@empresa.com",
-    role: "admin",
-    status: "active",
-    isOwner: true,
-  },
-  {
-    id: "u-2",
-    name: "Carlos Mendes",
-    email: "carlos@empresa.com",
-    role: "admin",
-    status: "active",
-    isOwner: false,
-  },
-  {
-    id: "u-3",
-    name: "Julia Costa",
-    email: "julia@empresa.com",
-    role: "user",
-    status: "active",
-    isOwner: false,
-  },
-  {
-    id: "u-4",
-    name: "",
-    email: "pedro@empresa.com",
-    role: "user",
-    status: "pending",
-    isOwner: false,
-  },
-];
 export function getInitials(name: string, email: string) {
   if (name) {
     return name
@@ -75,7 +43,19 @@ export function getInitials(name: string, email: string) {
 }
 
 export default function UsersPage() {
-  const [search, setSearch] = useState("");
+  const transferOpen = useUsersStore((s) => s.transferOpen);
+  const filteredUsers = useUsersStore((s) => s.filteredUsers)();
+  const transferCandidates = useUsersStore((s) => s.transferCandidates)();
+  const setSearch = useUsersStore((s) => s.setSearch);
+  const search = useUsersStore((s) => s.search);
+  const openTransfer = useUsersStore((s) => s.openTransfer);
+  const closeTransfer = useUsersStore((s) => s.closeTransfer);
+  const transferOwnership = useUsersStore((s) => s.transferOwnership);
+  const deleteUser = useUsersStore((s) => s.deleteUser);
+  const openRoleUpdate = useUsersStore((s) => s.openRoleUpdate);
+  const roleUpdateValue = useUsersStore((s) => s.roleUpdateValue);
+  const roleUpdateUser = useUsersStore((s) => s.roleUpdateUser);
+
   return (
     <div className="flex h-full flex-col">
       <PageHeader
@@ -99,14 +79,16 @@ export default function UsersPage() {
           />
         </div>
       </div>
+
+      {/* Users List */}
       <ScrollArea className="flex-1">
         <div className="p-4 sm:p-6">
           <div className="overflow-hidden rounded-xl border">
-            {users.map((user, i) => (
+            {filteredUsers.map((user, i) => (
               <div
                 key={user.id}
                 className={`flex items-center gap-3 px-3 py-3 sm:px-4 ${
-                  i !== users.length - 1 ? "border-b" : ""
+                  i !== filteredUsers.length - 1 ? "border-b" : ""
                 } transition-colors hover:bg-accent/30`}
               >
                 {/* Avatar */}
@@ -132,7 +114,7 @@ export default function UsersPage() {
                         variant="secondary"
                         className="shrink-0 text-[9px] sm:text-[10px]"
                       >
-                        Proprietario
+                        Proprietário
                       </Badge>
                     )}
                     {user.status === "pending" && (
@@ -168,57 +150,53 @@ export default function UsersPage() {
                 </Badge>
 
                 {/* Actions */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 shrink-0 text-muted-foreground sm:h-8 sm:w-8"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    {!user.isOwner && (
-                      <DropdownMenuItem
-                        className="gap-2"
-                        // onClick={() => {
-                        //   setRoleUpdateUser(user);
-                        //   setRoleUpdateValue(user.role);
-                        // }}
+                {!user.isOwner && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 shrink-0 text-muted-foreground sm:h-8 sm:w-8"
                       >
-                        <UserCog className="h-3.5 w-3.5" />
-                        Atualizar Funcao
-                      </DropdownMenuItem>
-                    )}
-                    {user.isOwner && (
-                      <DropdownMenuItem
-                        className="gap-2"
-                        //onClick={() => setTransferOpen(user.id)}
-                      >
-                        <Crown className="h-3.5 w-3.5" />
-                        Transferir Propriedade
-                      </DropdownMenuItem>
-                    )}
-                    {!user.isOwner && (
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
                       <>
+                        <DropdownMenuItem
+                          className="gap-2"
+                          onClick={() => openRoleUpdate(user)}
+                        >
+                          <UserCog className="h-3.5 w-3.5" />
+                          Atualizar Funcao
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="gap-2"
+                          onClick={() => transferOwnership(user.id)}
+                        >
+                          <Crown className="h-3.5 w-3.5" />
+                          Transferir Propriedade
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="gap-2 text-destructive focus:text-destructive"
-                          // onClick={() => handleDelete(user.id)}
+                          onClick={() => deleteUser(user.id)}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           Remover
                         </DropdownMenuItem>
                       </>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             ))}
           </div>
         </div>
       </ScrollArea>
+
+      {/* Transfer Ownership Dialog */}
     </div>
   );
 }
