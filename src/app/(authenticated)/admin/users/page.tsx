@@ -4,16 +4,33 @@ import PageHeader from "@/components/pageHeader";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getInitials, useUsersStore } from "@/lib/stores/users-store";
-import { Crown, MoreHorizontal, Plus, Search, Trash2 } from "lucide-react";
+import {
+  Crown,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Trash2,
+  Mail,
+} from "lucide-react";
 import { useEffect } from "react";
 
 export default function UsersPage() {
@@ -23,6 +40,12 @@ export default function UsersPage() {
   const transferOwnership = useUsersStore((s) => s.transferOwnership);
   const deleteUser = useUsersStore((s) => s.deleteUser);
   const setUsers = useUsersStore((s) => s.setUsers);
+  const openInvite = useUsersStore((s) => s.openInvite);
+  const inviteOpen = useUsersStore((s) => s.inviteOpen);
+  const inviteEmail = useUsersStore((s) => s.inviteEmail);
+  const closeInvite = useUsersStore((s) => s.closeInvite);
+  const setInviteEmail = useUsersStore((s) => s.setInviteEmail);
+  const inviteUser = useUsersStore((s) => s.inviteUser);
 
   useEffect(() => {
     (async () => {
@@ -39,7 +62,7 @@ export default function UsersPage() {
         title="Usuários"
         subtitle="Gerencie membros da equipe"
         actions={
-          <Button size="sm" className="gap-1.5 self-start">
+          <Button size="sm" className="gap-1.5 self-start" onClick={openInvite}>
             <Plus className="h-4 w-4" />
             Convidar
           </Button>
@@ -149,6 +172,48 @@ export default function UsersPage() {
           </div>
         </div>
       </ScrollArea>
+      <Dialog open={inviteOpen} onOpenChange={(v) => !v && closeInvite()}>
+        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-base">Convidar Usuario</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
+              Envie um convite para um novo membro da equipe.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-xs sm:text-sm">Email</Label>
+              <Input
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="usuario@empresa.com"
+                className="text-sm"
+                onKeyDown={(e) => e.key === "Enter" && inviteUser()}
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="flex-col gap-2 sm:flex-row">
+            <Button
+              variant="ghost"
+              onClick={closeInvite}
+              className="w-full sm:w-auto"
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={inviteUser}
+              disabled={!inviteEmail.trim()}
+              className="w-full sm:w-auto"
+            >
+              <Mail className="mr-1.5 h-4 w-4" />
+              Enviar Convite
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Transfer Ownership Dialog */}
     </div>

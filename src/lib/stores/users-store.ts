@@ -5,6 +5,8 @@ interface UsersState {
   users: User[];
   search: string;
   transferOpen: boolean;
+  inviteOpen: boolean;
+  inviteEmail: string;
   filteredUsers: () => User[];
   setSearch: (search: string) => void;
   owner: () => User | undefined;
@@ -14,12 +16,34 @@ interface UsersState {
   transferOwnership: (newOwnerId: string) => void;
   deleteUser: (id: string) => void;
   setUsers: (users: User[]) => void;
+  openInvite: () => void;
+  setInviteEmail: (email: string) => void;
+  closeInvite: () => void;
+  inviteUser: () => void;
 }
 
 export const useUsersStore = create<UsersState>((set, get) => ({
   users: [],
   search: "",
   transferOpen: false,
+  inviteOpen: false,
+  inviteEmail: "",
+  inviteUser: () => {
+    const { inviteEmail, users } = get();
+    if (!inviteEmail.trim()) return;
+    const newUser: User = {
+      id: crypto.randomUUID(),
+      name: "",
+      email: inviteEmail.trim(),
+      status: "pending",
+      isOwner: false,
+    };
+    set({
+      users: [...users, newUser],
+      inviteOpen: false,
+      inviteEmail: "",
+    });
+  },
   filteredUsers: () => {
     const { users, search } = get();
     if (!search.trim()) return users;
@@ -49,6 +73,12 @@ export const useUsersStore = create<UsersState>((set, get) => ({
     set({ users: users.filter((u) => u.id !== id) });
   },
   setUsers: (users) => set({ users }),
+
+  openInvite: () => set({ inviteOpen: true }),
+
+  closeInvite: () => set({ inviteOpen: false, inviteEmail: "" }),
+
+  setInviteEmail: (email) => set({ inviteEmail: email }),
 }));
 
 export function getInitials(name: string, email: string) {
