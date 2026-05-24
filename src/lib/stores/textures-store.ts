@@ -153,7 +153,7 @@ export const useTexturesStore = create<TexturesState>((set, get) => ({
   addTexture: async (name, maps) => {
     const response = await createTexture({ name, is_favorite: false });
     if (response.success && response.data) {
-      set((s) => ({ textures: [...s.textures, response.data] }));
+      set((s) => ({ textures: [...s.textures, {...response.data, maps: []}] }));
     }
   },
 
