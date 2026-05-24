@@ -1,21 +1,6 @@
+import { createTexture } from "@/actions/textureActions";
+import { Texture, TextureMaps } from "@/types/texture";
 import { create } from "zustand";
-
-// ---- Types ----
-
-export interface TextureMaps {
-  albedo: boolean;
-  normalMap: boolean;
-  roughness: boolean;
-  metalness: boolean;
-  ao: boolean;
-}
-
-export interface TextureEntry {
-  id: string;
-  name: string;
-  favorite: boolean;
-  maps: TextureMaps;
-}
 
 // ---- Constants ----
 
@@ -27,11 +12,11 @@ export const MAP_LABELS: Record<keyof TextureMaps, string> = {
   ao: "Ambient Occlusion",
 };
 
-const INITIAL_TEXTURES: TextureEntry[] = [
+const INITIAL_TEXTURES: Texture[] = [
   {
-    id: "tex-1",
+    id: 1,
     name: "Tecido Linho",
-    favorite: true,
+    is_favorite: true,
     maps: {
       albedo: true,
       normalMap: true,
@@ -41,9 +26,9 @@ const INITIAL_TEXTURES: TextureEntry[] = [
     },
   },
   {
-    id: "tex-2",
+    id: 2,
     name: "Couro Natural",
-    favorite: true,
+    is_favorite: true,
     maps: {
       albedo: true,
       normalMap: true,
@@ -53,9 +38,9 @@ const INITIAL_TEXTURES: TextureEntry[] = [
     },
   },
   {
-    id: "tex-3",
+    id: 3,
     name: "Veludo",
-    favorite: false,
+    is_favorite: false,
     maps: {
       albedo: true,
       normalMap: true,
@@ -65,9 +50,9 @@ const INITIAL_TEXTURES: TextureEntry[] = [
     },
   },
   {
-    id: "tex-4",
+    id: 4,
     name: "Madeira Carvalho",
-    favorite: false,
+    is_favorite: false,
     maps: {
       albedo: true,
       normalMap: true,
@@ -77,9 +62,9 @@ const INITIAL_TEXTURES: TextureEntry[] = [
     },
   },
   {
-    id: "tex-5",
+    id: 5,
     name: "Metal Escovado",
-    favorite: false,
+    is_favorite: false,
     maps: {
       albedo: true,
       normalMap: true,
@@ -102,30 +87,30 @@ const DEFAULT_MAPS: TextureMaps = {
 
 interface TexturesState {
   // Data
-  textures: TextureEntry[];
+  textures: Texture[];
 
   // UI State
   search: string;
   dialogOpen: boolean;
-  editingTexture: TextureEntry | null;
+  editingTexture: Texture | null;
   newTextureName: string;
   newMaps: TextureMaps;
 
   // Computed
-  filteredTextures: () => TextureEntry[];
-  sortedTextures: () => TextureEntry[];
+  filteredTextures: () => Texture[];
+  sortedTextures: () => Texture[];
   completeMaps: (maps: TextureMaps) => number;
 
   // Actions - Data
   addTexture: (name: string, maps: TextureMaps) => void;
-  updateTexture: (id: string, name: string, maps: TextureMaps) => void;
-  deleteTexture: (id: string) => void;
-  toggleFavorite: (id: string) => void;
+  updateTexture: (id: number, name: string, maps: TextureMaps) => void;
+  deleteTexture: (id: number) => void;
+  toggleis_favorite: (id: number) => void;
 
   // Actions - UI
   setSearch: (search: string) => void;
   openCreateDialog: () => void;
-  openEditDialog: (texture: TextureEntry) => void;
+  openEditDialog: (texture: Texture) => void;
   closeDialog: () => void;
   setNewTextureName: (name: string) => void;
   setNewMaps: (maps: TextureMaps) => void;
@@ -156,8 +141,8 @@ export const useTexturesStore = create<TexturesState>((set, get) => ({
   sortedTextures: () => {
     const filtered = get().filteredTextures();
     return [...filtered].sort((a, b) => {
-      if (a.favorite && !b.favorite) return -1;
-      if (!a.favorite && b.favorite) return 1;
+      if (a.is_favorite && !b.is_favorite) return -1;
+      if (!a.is_favorite && b.is_favorite) return 1;
       return 0;
     });
   },
@@ -165,14 +150,11 @@ export const useTexturesStore = create<TexturesState>((set, get) => ({
   completeMaps: (maps) => Object.values(maps).filter(Boolean).length,
 
   // Actions - Data
-  addTexture: (name, maps) => {
-    const newTex: TextureEntry = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      favorite: false,
-      maps: { ...maps },
-    };
-    set((s) => ({ textures: [...s.textures, newTex] }));
+  addTexture: async (name, maps) => {
+    const response = await createTexture({ name, is_favorite: false });
+    if (response.success && response.data) {
+      set((s) => ({ textures: [...s.textures, response.data] }));
+    }
   },
 
   updateTexture: (id, name, maps) => {
@@ -187,10 +169,10 @@ export const useTexturesStore = create<TexturesState>((set, get) => ({
     set((s) => ({ textures: s.textures.filter((t) => t.id !== id) }));
   },
 
-  toggleFavorite: (id) => {
+  toggleis_favorite: (id) => {
     set((s) => ({
       textures: s.textures.map((t) =>
-        t.id === id ? { ...t, favorite: !t.favorite } : t,
+        t.id === id ? { ...t, is_favorite: !t.is_favorite } : t,
       ),
     }));
   },

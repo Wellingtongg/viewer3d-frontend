@@ -72,8 +72,8 @@ export default function TexturesPage() {
   const sortedTextures = textures
     .filter((t) => t.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => {
-      if (a.favorite && !b.favorite) return -1;
-      if (!a.favorite && b.favorite) return 1;
+      if (a.is_favorite && !b.is_favorite) return -1;
+      if (!a.is_favorite && b.is_favorite) return 1;
       return 0;
     });
 
@@ -90,7 +90,7 @@ export default function TexturesPage() {
   const addTexture = useTexturesStore((s) => s.addTexture);
   const updateTexture = useTexturesStore((s) => s.updateTexture);
   const deleteTexture = useTexturesStore((s) => s.deleteTexture);
-  const toggleFavorite = useTexturesStore((s) => s.toggleFavorite);
+  const toggleis_favorite = useTexturesStore((s) => s.toggleis_favorite);
 
   function handleSave() {
     if (!newTextureName.trim()) return;
@@ -135,15 +135,15 @@ export default function TexturesPage() {
                 <div className="relative flex h-32 items-center justify-center bg-muted/50">
                   <ImageIcon className="h-8 w-8 text-muted-foreground/20" />
 
-                  {/* Favorite button */}
+                  {/* is_favorite button */}
                   <button
                     type="button"
-                    onClick={() => toggleFavorite(tex.id)}
+                    onClick={() => toggleis_favorite(tex.id)}
                     className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-md bg-background/80 backdrop-blur-sm transition-colors hover:bg-background"
                   >
                     <Star
                       className={`h-3.5 w-3.5 transition-colors ${
-                        tex.favorite
+                        tex.is_favorite
                           ? "fill-amber-400 text-amber-400"
                           : "text-muted-foreground"
                       }`}
